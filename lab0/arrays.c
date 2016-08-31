@@ -53,7 +53,9 @@ int main(int argc, char* argv[]) {
   // to 11 instead? How about 100? 1000? Make sure to set
   // the second argument back to 10 when you are done
   // testing.
-  // Answer:
+  // Answer: When set to 100 and 1000, an error message of
+  //  "Segmentation fault" is given at the end of the output.
+  //  Nothing special happens when set to 11. 
   fillArray(array, 10);
 
   int value;
@@ -65,7 +67,9 @@ int main(int argc, char* argv[]) {
   // TODO(2): We can actually use the address of the value
   // declared here as if it were an array of a single
   // element; why is this possible?
-  // Answer:
+  // Answer: &value is the pointer that points to the actual
+  //  int in the memory, array points to the initial element of a
+  //  series of int in the memory. They are basicly the same.
   fillArray(&value, 1);
   // fillArray should set value to 0 * 3 + 2 = 2.
   assert(value == 2);
@@ -116,8 +120,10 @@ int main(int argc, char* argv[]) {
   // it. valgrind is a tool for analyzing how programs
   // use memory, which is often invaluable for C and
   // C++ programming.
-  // Answer:
-  free(heap_array);
+  // Answer: 20 bytes in 1 block are definitely lost
+  // when free() is not called. No memory is lost when
+  // free() is called.
+     free(heap_array);
 
   // TODO(4): Now it's your turn to write some code.
   // Using malloc(), allocate a FourInts struct
@@ -131,5 +137,12 @@ int main(int argc, char* argv[]) {
   // you would expect. (Hint, you'll need to use the
   // -> operator to access fields of a FourInts*
   // variable instead of the . operator).
+ 	FourInts* pFourInts=(FourInts*)malloc(sizeof(FourInts));
+	fillArray((int*)pFourInts,4);
+	assert(pFourInts->a == 2);
+	assert(pFourInts->b == 5);
+	assert(pFourInts->c == 8);
+	assert(pFourInts->d == 11);
+	free(pFourInts);
   return 0;
 }
