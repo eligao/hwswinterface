@@ -120,7 +120,8 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-  return 2;
+  int result=~((~x)|(~y));
+  return result;
 }
 /* 
  * bitXor - x^y using only ~ and & 
@@ -130,7 +131,8 @@ int bitAnd(int x, int y) {
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  int result=~(~(x &(~y)) & ~(y & (~x)));
+  return result;
 }
 /* 
  * thirdBits - return word with every third bit (starting from the LSB) set to 1
@@ -140,7 +142,10 @@ int bitXor(int x, int y) {
  *   Rating: 1
  */
 int thirdBits(void) {
-  return 2;
+  int bitmask=0x49;                   // 00000000 01001001
+  bitmask= bitmask | (bitmask << 9);  // 00000000 01001001
+  bitmask= bitmask | (bitmask << 18); // 00010010 01001001
+  return bitmask;
 }
 // Rating: 2
 /* 
@@ -153,7 +158,11 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  return 2;
+  int extra_len= 32 +(~n + 1);
+  int shifted = x <<extra_len >> extra_len;
+  //int mask=((0x01 << n) + ~0); // 0x0000 0000
+  int result=!(shifted ^ x); 
+  return result;
 }
 /* 
  * sign - return 1 if positive, 0 if zero, and -1 if negative
@@ -164,7 +173,10 @@ int fitsBits(int x, int n) {
  *  Rating: 2
  */
 int sign(int x) {
-  return 2;
+  int result, signs;
+  signs= x >> 31;
+  result = (!!x) | signs;
+  return result;
 }
 /* 
  * getByte - Extract byte n from word x
@@ -175,7 +187,9 @@ int sign(int x) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-  return 2;
+  int BYTE_MASK=0x000000FF;
+  int result= (x >> (n << 3)) & BYTE_MASK;
+  return result;
 }
 // Rating: 3
 /* 
@@ -187,7 +201,9 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+  int mask = ~(1<<31>>n<<1);
+  int result = (x >> n) & mask;
+  return result;
 }
 /* 
  * addOK - Determine if can compute x+y without overflow
@@ -198,7 +214,17 @@ int logicalShift(int x, int n) {
  *   Rating: 3
  */
 int addOK(int x, int y) {
-  return 2;
+  int sign_mask = 0x01 << 31; // 0x8000
+  int sign_x = !(x & sign_mask);
+  int sign_y = !(y & sign_mask);
+  int sign_sum = !((x + y) & sign_mask);
+  // int OF=0; // overflow flag
+  // (sign_x == sign_y) && (sign_sum != sign_x)  ==> OF
+  //         LHS                    RHS
+  int LHS = !(sign_x ^ sign_y)  ; // sign_x == sign_y
+  int RHS = sign_sum ^ sign_x; // sign_sum - sign_x
+  int result = !(LHS & RHS); 
+  return result;
 }
 // Rating: 4
 /* 
@@ -209,7 +235,9 @@ int addOK(int x, int y) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  int cx = ~x + 1;
+  int result = (x >> 31 | cx >>31) + 1;  
+  return result;
 }
 // Extra Credit: Rating: 3
 /* 
@@ -220,7 +248,13 @@ int bang(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  // if x :
+  //   return y
+  // else:
+  //   return z  
+  int result;
+  result =((!x + (~1+1)) & y) | ((!!x+(~1+1)) &z);
+  return result;
 }
 // Extra Credit: Rating: 4
 /*
@@ -232,5 +266,9 @@ int conditional(int x, int y, int z) {
  *   Rating: 4
  */
 int isPower2(int x) {
-  return 2;
+  int positive = !(x >> 31 & 1);
+  int nonzero = !!x;
+  int pow2 = !(x & (x + ~0)); // 0100 - 1 = 0011
+    
+  return positive& nonzero & pow2;
 }

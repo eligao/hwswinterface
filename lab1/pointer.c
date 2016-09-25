@@ -85,8 +85,11 @@ int intSize() {
   int * intPtr1;
   int * intPtr2;
   // TODO: Write code to compute size of an integer.
-
-  return 2;
+  int size;
+  intPtr1 = intArray + 1;
+  intPtr2 = intArray + 2;
+  size = (int)intPtr2 - (int)intPtr1;
+  return size;
 }
 
 /*
@@ -97,8 +100,10 @@ int doubleSize() {
   double * doubPtr1;
   double * doubPtr2;
   // TODO: Write code to compute size of a double.
-
-  return 2;
+  doubPtr1 = doubArray + 1;
+  doubPtr2 = doubArray + 2;
+  int size = (int)doubPtr2 - (int)doubPtr1;
+  return size;
 }
 
 /*
@@ -109,8 +114,10 @@ int pointerSize() {
   double ** ptrPtr1;
   double ** ptrPtr2;
   // TODO: Write code to compute size of a pointer.
-
-  return 2;
+  ptrPtr1 = ptrArray + 1;
+  ptrPtr2 = ptrArray + 2;
+  int size = (int)ptrPtr2 - (int)ptrPtr1;
+  return size;
 }
 
 /*
@@ -123,7 +130,8 @@ int changeValue() {
   int * intPtr2;
   // TODO: Write code to change value of intArray[5] to 351 using only
   //       intPtr1 and the + operator.
-
+  intPtr2 = intArray + 5;
+  *intPtr2 = 351; 
   return intArray[5];
 }
 
@@ -136,7 +144,13 @@ int changeValue() {
  */
 int withinSameBlock(int * ptr1, int * ptr2) {
   // TODO
-  return 2;
+  int cast_ptr1, cast_ptr2;
+  cast_ptr1 = (int) ptr1;
+  cast_ptr2 = (int) ptr2;
+  cast_ptr1 >>= 6;
+  cast_ptr2 >>= 6;
+  int result =!(cast_ptr1 ^ cast_ptr2);
+  return result;
 }
 
 /*
@@ -145,7 +159,14 @@ int withinSameBlock(int * ptr1, int * ptr2) {
  */
 int withinArray(int * intArray, int size, int * ptr) {
   // TODO
-  return 2;
+  int dist = ptr - intArray;
+  // test 0<= dist < size
+  //     cond1 & cond2
+  int cond1, cond2;
+  cond1 = !((dist >> 31) & 1); // 0 <= dist ( sign bit of dist == 0)
+  cond2 = (dist - size) >> 31; // dist < size ( !(dist >= size), or 
+  int result = cond1 & cond2;
+  return result;
 }
 /*
  * Return x with the n bits that begin at position p inverted (i.e.,
@@ -154,5 +175,8 @@ int withinArray(int * intArray, int size, int * ptr) {
  */
 int invert(int x, int p, int n) {
   // TODO
-  return 2;
+  int invert_mask;
+  invert_mask = ((1 << n) - 1) << p;
+  x ^= invert_mask; 
+  return x;
 }
