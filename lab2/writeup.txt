@@ -1,0 +1,23 @@
+phase_1:
+  String comparerision.
+  String is:
+  "Science isn't about why, it's about why not?"
+
+Phase_2:
+  Loop
+  6 digits (separated)
+  passcode is in the form of :
+  x y z x y z
+
+Phase_3:
+  Jump table (switch).
+  Input 2 digits.
+  Possible combinations:
+    0 535
+    1 926
+    2 214
+    3 339
+    4 119
+    5 352
+    6 919
+    7 412
