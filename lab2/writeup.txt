@@ -21,3 +21,12 @@ Phase_3:
     5 352
     6 919
     7 412
+
+Phase_4:
+  input a number as i
+  func4(i)=func4(i-1)+func4(i-2)
+  (recursive fibonacci numbers generator)
+  if func4(i)==55 then success
+  answer here: i=9
+
+ 
