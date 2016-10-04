@@ -29,4 +29,52 @@ Phase_4:
   if func4(i)==55 then success
   answer here: i=9
 
+Phase_5:
+  Dump of assembler code for function phase_5:
+=> 0x0000000000401002 <+0>:     sub    $0x18,%rsp
+   0x0000000000401006 <+4>:     lea    0x8(%rsp),%rcx
+   0x000000000040100b <+9>:     lea    0xc(%rsp),%rdx
+   0x0000000000401010 <+14>:    mov    $0x401ebe,%esi
+   0x0000000000401015 <+19>:    mov    $0x0,%eax                        # // prepare stack and sscanf call
+   0x000000000040101a <+24>:    callq  0x400ab0 <__isoc99_sscanf@plt>   # read n nums as a, b
+   0x000000000040101f <+29>:    cmp    $0x1,%eax                        # if n > 1 :
+   0x0000000000401022 <+32>:    jg     0x401029 <phase_5+39>            #   pass
+   0x0000000000401024 <+34>:    callq  0x40163d <explode_bomb>          # else : boom
+   0x0000000000401029 <+39>:    mov    0xc(%rsp),%eax                   # eax = a
+   0x000000000040102d <+43>:    and    $0xf,%eax                        # eax &= 0xF // clear all bits higher then 4th LSB
+   0x0000000000401030 <+46>:    mov    %eax,0xc(%rsp)                   # a = eax
+   0x0000000000401034 <+50>:    cmp    $0xf,%eax                        # if a == 0xF:
+   0x0000000000401037 <+53>:    je     0x401065 <phase_5+99>            #   boom
+   0x0000000000401039 <+55>:    mov    $0x0,%ecx                        # ecx = 0
+   0x000000000040103e <+60>:    mov    $0x0,%edx                        # edx = 0
+   0x0000000000401043 <+65>:    add    $0x1,%edx                        # do {  edx ++
+   0x0000000000401046 <+68>:    cltq                                    #       convert_long_to_qword(eax) // arithmetically extend eax to rax, i.e. copy sign bit of eax to higher bits in rax (seems doing nothing here)
+   0x0000000000401048 <+70>:    mov    0x401ba0(,%rax,4),%eax           #       eax = array[rax]    // see the following table for (int)array
+   0x000000000040104f <+77>:    add    %eax,%ecx                        #       ecx += eax }
+   0x0000000000401051 <+79>:    cmp    $0xf,%eax                        # while
+   0x0000000000401054 <+82>:    jne    0x401043 <phase_5+65>            #    ( eax != 0xf )
+   0x0000000000401056 <+84>:    mov    %eax,0xc(%rsp)                   # b = eax
+   0x000000000040105a <+88>:    cmp    $0xc,%edx                        # if (edx != 0xc)
+   0x000000000040105d <+91>:    jne    0x401065 <phase_5+99>            #   boom
+   0x000000000040105f <+93>:    cmp    0x8(%rsp),%ecx                   # else if (ecx == b)
+   0x0000000000401063 <+97>:    je     0x40106a <phase_5+104>           #   continue
+   0x0000000000401065 <+99>:    callq  0x40163d <explode_bomb>          # else boom
+   0x000000000040106a <+104>:   add    $0x18,%rsp                       # // restore stack
+   0x000000000040106e <+108>:   retq                                    # return
+End of assembler dump.
+
+link array for eax=array[rax]
+find the 0xC(12)th link before the value of 0xF (array[6])
+0x401ba0 <array.3014>:         0 0x0000000a     1 0x00000002     2 0x0000000e     3 0x00000007
+0x401bb0 <array.3014+16>:      4 0x00000008     5 0x0000000c     6>0x0000000f     7 0x0000000b
+0x401bc0 <array.3014+32>:      8 0x00000000     9 0x00000004     a 0x00000001     b 0x0000000d
+0x401bd0 <array.3014+48>:      c 0x00000003     d 0x00000009     e 0x00000006     f 0x00000005
+The link list (reverse):
+f<6<e<2<1<a<0<8<4<9<d<b<7<3<c<5<f
+0 1 2 3 4 5 6 7 8 9 a b c d e f 0
+^_______________________<
+input a is the 12th link before value f. Here, a=7
+input b it the sum of all values in the path of link. Here b = f+6+e+2+1+a+0+8+4+9+d+b(HEX) = 64(HEX) =93 (DEC)
+therefore, the key is :
+7 93
  
